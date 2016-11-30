@@ -1,5 +1,6 @@
 <?php
 
+namespace pwNavMenu;
 /**
  * This class is helps to generate nevigation bar and breadcumb.
  *
