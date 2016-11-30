@@ -1,0 +1,29 @@
+{
+    "name": "PW/NavMenu",
+	 "version": "1.0.0",	 
+    "description": "Create Navigation menu and Sitemap",
+    "require": {
+        "php": "^5.3.3 || ^7.0",
+    },
+	"repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/crajbanshi/pw_NavMenu"
+        }
+    ],
+	"authors":{
+            "name": "Chanchal Rajbanshi",
+            "email": "crajbanshi@gmail.com",
+            "role": "Developer"
+        },
+	"authors":{
+            "name": "Chanchal Rajbanshi",
+            "email": "crajbanshi@gmail.com",
+            "role": "Developer"
+        },
+	"autoload": {
+        "classmap": [
+            "Menu.php"           
+        ]
+},
+}
