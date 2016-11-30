@@ -1,5 +1,10 @@
 <?php
+
+namespace NavMenu;
 include_once 'Menu.php';
+
+use NavMenu\Menu;
+
 class Sitemap extends Menu {
 	/**
 	 *
