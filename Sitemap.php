@@ -147,4 +147,8 @@ class Sitemap extends Menu {
 		
 		return $stringmenu;
 	}
+    
+    protected function generateXMLSitemap($menu, $child = FALSE) {
+        // TODO
+}
 }
