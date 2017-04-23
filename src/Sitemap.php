@@ -1,9 +1,8 @@
 <?php
 
-namespace React\Navmenu;
-//include_once 'Menu.php';
+namespace Lotus\Navmenu;
 
-use React\Promise\Menu;
+use Lotus\Promise\Menu;
 
 class Sitemap extends Menu {
 	/**

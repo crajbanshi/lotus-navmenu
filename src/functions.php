@@ -1,5 +1,5 @@
 <?php
 
-namespace React\Navmenu;
+namespace Lotus\Navmenu;
 
 

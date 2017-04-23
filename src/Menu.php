@@ -1,6 +1,6 @@
 <?php
 
-namespace React\Navmenu;
+namespace Lotus\Navmenu;
 /**
  * This class is helps to generate nevigation bar and breadcumb.
  *
