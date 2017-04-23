@@ -1,9 +1,9 @@
 <?php
 
-namespace NavMenu;
-include_once 'Menu.php';
+namespace React\Navmenu;
+//include_once 'Menu.php';
 
-use NavMenu\Menu;
+use React\Promise\Menu;
 
 class Sitemap extends Menu {
 	/**

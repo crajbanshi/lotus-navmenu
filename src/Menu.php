@@ -1,6 +1,6 @@
 <?php
 
-namespace pwNavMenu;
+namespace React\Navmenu;
 /**
  * This class is helps to generate nevigation bar and breadcumb.
  *
@@ -36,6 +36,8 @@ class Menu {
 	 * @var array
 	 */
 	protected static $attributes = array ();
+
+	protected static $activeMenu = array();
 	
 	/*
 	 * |-------------------------------------------------------------------------- | Queueable Jobs |-------------------------------------------------------------------------- | | This job base class provides a central location to place any logic that | is shared across all of your jobs. The trait included with the class | provides access to the "queueOn" and "delay" queue helper methods. |
@@ -45,8 +47,8 @@ class Menu {
 	 *
 	 * @return String
 	 */
-	public static function render() {
-		return (new Menu ())->menuHelper ();
+	public static function render( $depth = 10 ) {
+		return (new Menu ())->menuHelper ($depth);
 	}
 	
 	/**
@@ -110,7 +112,6 @@ class Menu {
 		if (empty ( self::$menu )) {
 			// TODO
 		}
-		
 		return self::$menu;
 	}
 	
@@ -151,10 +152,10 @@ class Menu {
 	/**
 	 * Generating HTML Navigation Bar in the form of HTML
 	 */
-	protected function menuHelper() {
-		$this->activeMenu ( self::$menu );
+	protected function menuHelper($depth) {
+		$this->activeMenu ( self::$menu);
 		
-		echo '<ul ' . $this->getAttributes () . '>' . $this->generateMenu ( self::$menu ) . '';
+		echo '<ul ' . $this->getAttributes () . '>' . $this->generateMenu ( self::$menu, $depth ) . '';
 		$this->renderJS ();
 	}
 	protected function renderJS() {
@@ -172,8 +173,8 @@ class Menu {
 	 * @return mixed
 	 */
 	protected function requestUri() {
-		$uri = (explode ( "#", (explode ( "?", $_SERVER ['REQUEST_URI'] ) [0]) ) [0]);		
-		return baseUrl ( $uri );
+		//$uri = (explode ( "#", (explode ( "?", $_SERVER ['REQUEST_URI'] ) [0]) ) [0]);
+		return str_replace(site_url(), '',current_url() ) ;
 	}
 	/**
 	 * Generating the Menu Array to HTML String
@@ -182,7 +183,7 @@ class Menu {
 	 * @param string $child        	
 	 * @return string
 	 */
-	protected function generateMenu($menu, $child = FALSE, $attr = array()) {
+	protected function generateMenu($menu, $depth , $child = FALSE, $attr = array()) {
 		$stringmenu = '';
 		if ($child) {
 			$stringmenu .= '<ul class="dropdown-menu" ';			
@@ -199,7 +200,7 @@ class Menu {
 			
 			if (is_array ( $val )) {
 				
-				if (isset ( $val ['child'] )) {
+				if (isset ( $val ['child'] ) && $depth >= 2) {
 					$stringmenu .= '<li class="dropdown ';
 					
 					$stringmenu .= $this->active ( $val );
@@ -209,9 +210,10 @@ class Menu {
                 data-hover="dropdown" data-delay="0" data-close-others="false"
                     href="' . $val ['url'] . '"> ' . $val ['label'] . '<span class="caret"></span></a>';
 					
-					$stringmenu .= $this->generateMenu ( $val ['child'], TRUE );
+					$stringmenu .= $this->generateMenu ( $val ['child'],$depth, TRUE );
+
 					$stringmenu .= '</li>';
-				} elseif (isset ( $val ['subchild'] )) {
+				} elseif (isset ( $val ['subchild'] ) && $depth>=3) {
 					$stringmenu .= '<li class="dropdown-submenu ';
 					
 					$stringmenu .= $this->active ( $val );
@@ -221,17 +223,17 @@ class Menu {
                 data-hover="dropdown" data-delay="0" data-close-others="false"
                     href="' . $val ['url'] . '"> ' . $val ['label'] . '</a>';
 					
-					$stringmenu .= $this->generateMenu ( $val ['subchild'], TRUE,  $val ['attribute'] );
+					$stringmenu .= $this->generateMenu ( $val ['subchild'], $depth, TRUE,  isset($val ['attribute'])?$val ['attribute']:null );
 					$stringmenu .= '</li>';
 				} else {
 					
 					$stringmenu .= '<li ';
-					if ($this->requestUri () === $val ['url']) {
+					if ($this->requestUri () === $val ['url'] || self::$activeMenu == $key  ) {
 						
 						$stringmenu .= ' class="active"';
 					}
 					
-					$stringmenu .= '><a href="' . $val ['url'] . '" ';
+					$stringmenu .= '><a href="' . site_url( $val ['url'] ) . '" ';
 					
 					if (isset ( $val ['attribute'] )) {
 						foreach ( $val ['attribute'] as $attkey => $attval )
@@ -261,24 +263,33 @@ class Menu {
 	 * @param array $menu        	
 	 * @param string $child        	
 	 */
-	private function activeMenu($menu, $child = FALSE) {
+	private function activeMenu($menu) {
 		foreach ( $menu as $key => $val ) {
-			
 			if (is_array ( $val )) {
-				
 				if (isset ( $val ['child'] )) {
-					$this->activeMenu ( $val ['child'], TRUE );
+				  $ret =	$this->activeMenu ( $val ['child'] );	
+				  if ($this->requestUri () === $val ['url']) {					
+					self::$activeMenu = $key;				
+				}			 
+					   
 				} elseif (isset ( $val ['subchild'] )) {
 					
-					$this->activeMenu ( $val ['subchild'], TRUE );
-				} else if ($this->requestUri () === $val ['url']) {
+				return	$this->activeMenu ( $val ['subchild'] );
+				} elseif ($this->requestUri () === $val ['url']) {
 					$this->appendToBreadcumb ( [ 
 							$key => $val 
-					] );
+					] );				
 					
 					self::$is_breadcumb = true;
+					
 				}
 			}
+
+			if(self::$is_breadcumb ){
+					self::$activeMenu = $key;
+					break;
+			}
+
 		}
 		
 		// if breadcumb not found then clear record
@@ -323,7 +334,7 @@ class Menu {
 		foreach ( self::$breadcumb as $link ) {
 			foreach ( $link as $keyb => $valb ) {
 				
-				if ($this->findKey ( $val, $keyb )) {
+				if ($this->findKey ( $val, $keyb )) {					
 					$stringmenu = 'active ';
 				}
 			}
@@ -344,6 +355,17 @@ class Menu {
 		}
 		return self::$is_breadcumb;
 	}
+
+/**
+*  get active menu
+*
+*/
+	public static function getActiveMenu() {
+		if (self::$activeMenu) {
+			return isset(self::$menu[self::$activeMenu])?self::$menu[self::$activeMenu]: false;
+		}
+	}
+	
 	private function getBreadcumbPath($key, $haystack) {
 		$menuPath = array ();
 		$strings = '';
@@ -369,12 +391,12 @@ class Menu {
 	 * @return string
 	 */
 	private function htmlBreadcumb() {
-		if ($this->requestUri () === baseUrl ( '/home' ) || $this->requestUri () === baseUrl () . '/') {
+		if ($this->requestUri () ===  'home'  || $this->requestUri () ===  '/') {
 			return '';
 		}
 		
 		$htmlStrings = '<ol class="breadcrumb">';
-		$htmlStrings .= '<li><a href="' . baseUrl ( '/Home' ) . '"><i class="fa fa-home"></i>&nbsp;Home</a></li>';
+		$htmlStrings .= '<li><a href="' . site_url ( 'home' ) . '"><i class="fa fa-home"></i>&nbsp;Home</a></li>';
 		
 		$menuPath = array ();
 		
@@ -402,6 +424,7 @@ class Menu {
 		if (! self::$is_breadcumb) {
 			self::$is_breadcumb = true;
 			self::$breadcumb [] = $val;
+			// Root active menu			
 			return self::$breadcumb [0];
 		}
 	}

@@ -1,29 +1,28 @@
 {
-    "name": "PW/NavMenu",
-	 "version": "1.0.0",	 
-    "description": "Create Navigation menu and Sitemap",
-    "require": {
-        "php": "^5.3.3 || ^7.0",
-    },
-	"repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/crajbanshi/pw_NavMenu"
-        }
+    "name": "lotus/navmenu",
+    "description": "A lightweight implementation of navigation menu builder for PHP",
+    "license": "MIT",
+    "authors": [
+        {"name": "Chanchal Rajbanshi", "email": "crajbansi@gmail.com"}
     ],
-	"authors":{
-            "name": "Chanchal Rajbanshi",
-            "email": "crajbanshi@gmail.com",
-            "role": "Developer"
-        },
-	"authors":{
-            "name": "Chanchal Rajbanshi",
-            "email": "crajbanshi@gmail.com",
-            "role": "Developer"
-        },
-	"autoload": {
-        "classmap": [
-            "Menu.php"           
-        ]
-}
+    "require": {
+        "php": ">=5.4.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~4.8"
+    },
+    "autoload": {
+        "psr-4": {
+            "Lotus\\Navmenu\\": "src/"
+        }       
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Lotus\\Navmenu\\": "tests/fixtures"
+        }
+    },
+    "keywords": [
+        "Nav",
+        "php menu"
+    ]
 }
