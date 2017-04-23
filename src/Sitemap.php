@@ -2,7 +2,7 @@
 
 namespace Lotus\Navmenu;
 
-use Lotus\Promise\Menu;
+use Lotus\Navmenu\Menu;
 
 class Sitemap extends Menu {
 	/**
