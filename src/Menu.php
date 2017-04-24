@@ -13,6 +13,7 @@ class Menu extends MenuDefination {
 	protected static $userEmbed = TRUE;
 	
 	/**
+	 * add menu arrays for multiple users, key is user type or menu type
 	 *
 	 * @param array $new_menu        	
 	 * @param string $key        	
@@ -40,8 +41,15 @@ class Menu extends MenuDefination {
 
 		echo '</div>';
 	}
-
-	static function render($type = 'public',  $depth = 10){
+	
+	/**
+	* Generate HTML navigation menu
+	* 
+	*  @param int $depth        	
+	*  @param string $type 
+	*  @return string
+	*/	
+	static function render($depth = 10, $type = 'public'){
 		parent::setMenuArray(self::$allmenu[$type] );
 		
 		return parent::render($depth);
