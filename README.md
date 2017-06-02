@@ -22,15 +22,27 @@ First Input the menu array and navbar css class.
 
 ```php
 $type = 'user';
-Menu::append ( $navbar_1,[ 'class' => 'nav nav-bar' ], $type );
+Menu::setMenuArray ( $navbarArray,[ 'class' => 'nav nav-bar' ], $type );
 ```
 
 To place menu at your page, use render method at your header page.
 
 ```php
-echo Menu::render ( $type );
+echo Menu::render ();
 ```
 
+Get Breadcumb
+
+```php
+echo Menu::renderBreadcumb ();
+```
+
+Get Active menu array
+
+```php
+$lavel = 0;
+echo Menu::getActiveMenu($lavel);
+```
 
 
 This one can generate sitemap also. site map using this class library.
@@ -45,7 +57,7 @@ $menutype is either **public** or **user**.
 Example menu input array
 
 ```php
-$navbar = [ 'home' => [ 'label' => 'Home', 'url' =>  ( '/Home' ) ],
+$navbarArray = [ 'home' => [ 'label' => 'Home', 'url' =>  ( '/Home' ), 'icon'=>'fa fa-home' ],
 	    'View' => [ 'label' => 'View', 'url' => '',
 			 'child' => [
 				 'user_related' => [ 'label' => 'User Related', 'url' => '#'  ]

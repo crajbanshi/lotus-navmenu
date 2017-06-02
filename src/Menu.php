@@ -146,6 +146,15 @@ class Menu {
 		}
 		return self::$menu;
 	}
+
+	/**
+	 * Getting breadcumb string Alias
+	 *
+	 * @return string
+	 */
+	public static function renderBreadcumb() {
+		return self::breadcumbHelper();
+	}
 	
 	/**
 	 * Validation for Menu Array
@@ -341,7 +350,9 @@ class Menu {
 				  $ret =	$this->activeMenu ( $val ['child'] );	
 				  if ($this->requestUri () === $val ['url']) {					
 					self::$activeMenu = $key;
-						
+						$this->appendToBreadcumb ( [ 
+							$key => $val 
+					] );
 				}		 
 				 
 				} elseif (isset ( $val ['subchild'] )) {
@@ -397,7 +408,7 @@ class Menu {
 			return false;
 		}	
 		foreach ( $array as $key => $item ) {
-			if ($key == $keySearch) {
+			if(is_array($item) && array_key_exists($keySearch, $item) ){
 				return true;
 			} else {
 				if (is_array ( $item ) ) {
@@ -441,7 +452,7 @@ class Menu {
 */
 	public static function getActiveMenu($label = 0) {
 		if (self::$activeMenu && $label == 0) {
-			return isset(self::$menu[self::$activeMenu])?self::$menu[self::$activeMenu]['child']: false;
+			return isset(self::$menu[self::$activeMenu]['child'])?self::$menu[self::$activeMenu]['child']: false;
 		}
 
 	}
@@ -449,6 +460,7 @@ class Menu {
 	private function getBreadcumbPath($key, $haystack) {
 		$menuPath = array ();
 		$strings = '';
+		
 		foreach ( $haystack as $keyb => $val ) {
 			if ($this->findKey ( $val, $key )) {
 				$menuPath [] = $keyb;
@@ -476,6 +488,7 @@ class Menu {
 		}
 		
 		$htmlStrings = '<ol class="breadcrumb">';
+		$htmlStrings .= '<li><a href="' . $this->url ( '/' ) . '"><i class="fa fa-home"></i>&nbsp;Home</a></li>';
 		
 		$menuPath = array ();
 		$key = '';
@@ -487,9 +500,6 @@ class Menu {
 			$htmlStrings .= $this->getBreadcumbPath ( $key, self::$menu );
 			$icon = isset($val ['icon'])?'<i class="' . $val ['icon'] . '"></i>;':'';
 			$htmlStrings .= '<li >' . $icon . '&nbsp;' . $val ['label'] . '</li>';
-		}else{
-			$htmlStrings .= '<li><a href="' . $this->url ( 'home' ) . '"><i class="fa fa-home"></i>&nbsp;Home</a></li>';
-		
 		}
 		$htmlStrings .= '</ol>';
 		

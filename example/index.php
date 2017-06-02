@@ -40,7 +40,10 @@ Menu::setMenuArray ( $navbar,[ 'class' => 'nav nav-bar' ] );
 echo Menu::render ( );
 
 echo "<br/><br/><br/><br/>";
-echo Menu::breadcumbHelper();
+echo Menu::renderBreadcumb();
+
+echo "<br/><br/><br/><br/><pre>";
+var_dump( Menu::getActiveMenu(0) );
 
 echo "<br/><br/><br/><br/><pre>";
 var_dump( Menu::getActiveMenu(0) );
