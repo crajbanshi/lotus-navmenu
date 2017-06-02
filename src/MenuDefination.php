@@ -8,7 +8,7 @@ namespace Lotus\Navmenu;
  *
  * @package Sarthac-HCCMC
  * @author Chanchal Rajbanshi
- * @version 1.0
+ * @since version 1.0
  *         
  */
 abstract class MenuDefination {
